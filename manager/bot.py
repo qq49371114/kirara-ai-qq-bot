@@ -13,7 +13,6 @@ from urllib.parse import urlparse
 import httpx
 import openai
 import regex
-import requests
 import urllib3.exceptions
 from aiohttp import ClientConnectorError
 from httpx import ConnectTimeout
@@ -31,6 +30,7 @@ from chatbot.chatgpt import ChatGPTBrowserChatbot
 from config import OpenAIAuthBase, OpenAIAPIKey, Config, BingCookiePath, BardCookiePath, YiyanCookiePath, ChatGLMAPI, \
     PoeCookieAuth, SlackAppAccessToken, XinghuoCookiePath, G4fModels
 from exceptions import NoAvailableBotException, APIKeyNoFundsError
+from security import safe_requests
 
 
 class BotManager:
@@ -431,7 +431,7 @@ class BotManager:
         proxy_addr = urlparse(proxy)
         if not network.is_open(proxy_addr.hostname, proxy_addr.port):
             raise Exception("登录失败! 无法连接至本地代理服务器，请检查配置文件中的 proxy 是否正确！")
-        requests.get("http://www.gstatic.com/generate_204", proxies={
+        safe_requests.get("http://www.gstatic.com/generate_204", proxies={
             "https": proxy,
             "http": proxy
         })
